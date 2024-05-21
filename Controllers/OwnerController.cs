@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using ReviewApp.Dto;
 using ReviewApp.Interfaces;
 using ReviewApp.Models;
 
@@ -41,6 +42,27 @@ namespace ReviewApp.Controllers
             return Ok(_mapper.Map<Owner>(_ownerRepository.GetOwner(id)));
         }
 
-        []
+        [HttpGet("{pokeid}/getownerofpokemon")]
+        [ProducesResponseType(200,Type =typeof(ICollection<Owner>))]
+        [ProducesResponseType(400)]
+
+        public IActionResult getOwmerByPokemon(int pokeid)
+        {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(_mapper.Map<List<OwnerDto>>(_ownerRepository.GetOwnerOfPokemon(pokeid)));
+        }
+
+        [HttpGet("{ownerid}/getpokemonbyOwner")]
+        [ProducesResponseType(200, Type =typeof(ICollection<Pokemon>))]
+        [ProducesResponseType(400)]
+        public IActionResult getPokemonByOwner(int ownerid)
+        {
+            if(!_ownerRepository.OwnerExists(ownerid))
+                return NotFound();
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(_mapper.Map<List<PokemonDto>>(_ownerRepository.GetPokemonByOwner(ownerid)));
+        }
     }
 }

@@ -6,7 +6,7 @@ namespace ReviewApp.Interfaces
     {
         ICollection<Owner> GetOwners();
         Owner GetOwner(int ownerId);
-        ICollection<Owner> GetOwnerOfPokemon(int pokemonId); //Continue From Here ...
+        ICollection<Owner> GetOwnerOfPokemon(int pokemonId);
         ICollection<Pokemon> GetPokemonByOwner(int ownerId);
         bool OwnerExists(int ownerId);
     }
