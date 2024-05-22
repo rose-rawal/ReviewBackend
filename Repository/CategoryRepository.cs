@@ -19,6 +19,12 @@ namespace ReviewApp.Repository
             return exists;
         }
 
+        public bool CreateCategory(Category category)
+        {
+            _context.Categories.Add(category);
+            return Save();
+        }
+
         public ICollection<Category> GetCategories()
         {
             ICollection<Category> category=_context.Categories.OrderBy(c=>c.Id).ToList();
@@ -33,6 +39,11 @@ namespace ReviewApp.Repository
         public ICollection<Pokemon> GetPokemonByCategory(int categoryId)
         {
             return _context.PokemonCategories.Where(c=>c.CategoryId== categoryId).Select(c=>c.Pokemon).ToList();
+        }
+        public bool Save()
+        {
+            var change=_context.SaveChanges();
+            return change>0 ? true : false;
         }
     }
 }
