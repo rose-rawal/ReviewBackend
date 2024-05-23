@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ReviewApp.Dto;
 using ReviewApp.Interfaces;
+using ReviewApp.Models;
 
 namespace ReviewApp.Controllers
 {
@@ -46,6 +47,28 @@ namespace ReviewApp.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             return Ok(_reviewer.GetReviewsByReviewer(id));
+        }
+
+
+        [HttpPost]
+        public IActionResult PostReviewer([FromQuery]int reviewId, [FromBody]ReviewerDto reviewerData)
+        {
+            if(reviewerData==null || reviewId<0)
+                return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            if(_reviewer.GetReviewers().Where(r=>r.Id==reviewerData.Id).Any())
+            {
+                ModelState.AddModelError("", "Error Reviewer already exists");
+                return StatusCode(456, ModelState);
+            }
+            var reviewerMap = _mapper.Map<Reviewer>(reviewerData);
+            if(!_reviewer.PostReviewer(reviewId, reviewerMap))
+            {
+                ModelState.AddModelError("", "Error in creating Reviewer");
+                return StatusCode(466, ModelState);
+            }
+            return Ok("Success in creating reviewer");
         }
 
     }

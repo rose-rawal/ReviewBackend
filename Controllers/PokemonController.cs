@@ -57,5 +57,27 @@ namespace ReviewApp.Controllers
             return Ok(rating);
 
         }
+
+        [HttpPost]
+        public IActionResult createPokemon([FromQuery]int ownerId, [FromQuery]int categoryId, [FromBody]PokemonDto pokemon)
+        {
+            if( pokemon==null)
+                return BadRequest(ModelState);
+            var pokemonData = _pokemonRepository.GetPokemons().Any(p=>p.Name==pokemon.Name);
+            if (pokemonData)
+            {
+                ModelState.AddModelError("", "Pokemon already exists");
+                return StatusCode(405, ModelState);
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var pokemonMap = _mapper.Map<Pokemon>(pokemon);
+            if (!_pokemonRepository.CreatePokemon(ownerId, categoryId, pokemonMap))
+            {
+                ModelState.AddModelError("", "Error in generating Pokemon");
+                return StatusCode(407,ModelState);
+            }
+            return Ok("Success in creating Pokemon");
+        }
     }
 }

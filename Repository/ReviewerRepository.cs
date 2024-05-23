@@ -30,5 +30,30 @@ namespace ReviewApp.Repository
         {
             return _context.ReviewersOwner.Any();
         }
+
+        public bool PostReviewer(int reviewId, Reviewer reviewer)
+        {
+            var review=_context.Reviews.Where(r => r.Id == reviewId).FirstOrDefault();
+            if(review==null) { 
+                return false;
+            }
+            var reviewerData = new Reviewer()
+            {
+                Id = reviewer.Id,
+                FirstName = reviewer.FirstName,
+                LastName = reviewer.LastName,
+                Reviews=new List<Review>()
+            };
+            _context.Add(reviewerData);
+            reviewerData.Reviews.Add(review);
+
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saveChanges=_context.SaveChanges();
+            return saveChanges>0 ? true : false;
+        }
     }
 }

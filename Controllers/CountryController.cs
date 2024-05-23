@@ -64,5 +64,29 @@ namespace ReviewApp.Controllers
             }
             return Ok(_mapper.Map<List<OwnerDto>>(_countryRepository.GetOwnerByCountry(countryId)));
         }
+
+        [HttpPost]
+
+        public IActionResult PostCountry(CountryDto country) {
+            if(country == null)
+                return BadRequest(ModelState);
+            if (_countryRepository.GetCountries().Where(c => c.Name.ToUpper() == country.Name.ToUpper()).Any())
+            {
+                ModelState.AddModelError("", "Already the country Exists");
+                return StatusCode(442,ModelState);
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var countryMap = _mapper.Map<Country>(country);
+            if (!_countryRepository.CreateCountry(countryMap))
+            {
+                ModelState.AddModelError("", "Create a country failed");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Success in creating Country");
+
+        }
     }
 }

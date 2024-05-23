@@ -9,5 +9,7 @@ namespace ReviewApp.Interfaces
         Country GetCountryByOwner(int ownerId);
         ICollection<Owner> GetOwnerByCountry(int countryId);
         bool IsCountry(int id);
+        bool CreateCountry(Country country);
+        bool Save();
     }
 }

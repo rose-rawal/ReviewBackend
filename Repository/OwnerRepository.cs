@@ -10,6 +10,13 @@ namespace ReviewApp.Repository
         public OwnerRepository(DataContext dataContext) { 
             _dataContext = dataContext;
         }
+
+        public bool CreateOwner(Owner owner)
+        {
+            _dataContext.Owners.Add(owner);
+            return Save();
+        }
+
         public Owner GetOwner(int ownerId)
         {
             return _dataContext.Owners.Where(o => o.Id == ownerId).FirstOrDefault();
@@ -33,6 +40,12 @@ namespace ReviewApp.Repository
         public bool OwnerExists(int ownerId)
         {
             return _dataContext.Owners.Any(o=>o.Id==ownerId);
+        }
+
+        public bool Save()
+        {
+            var ownerSave = _dataContext.SaveChanges();
+            return ownerSave> 0 ? true : false;
         }
     }
 }

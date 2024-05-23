@@ -12,10 +12,12 @@ namespace ReviewApp.Controllers
     public class OwnerController:Controller
     {
         private readonly IOwnerRepository _ownerRepository;
+        private readonly ICountryRepository _countryRepository;
         private readonly IMapper _mapper;
-        public OwnerController(IOwnerRepository ownerRepository,IMapper mapper) { 
+        public OwnerController(IOwnerRepository ownerRepository,ICountryRepository countryRepository,IMapper mapper) { 
             _mapper = mapper;
             _ownerRepository = ownerRepository;
+            _countryRepository = countryRepository;
         }
 
 
@@ -63,6 +65,30 @@ namespace ReviewApp.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
             return Ok(_mapper.Map<List<PokemonDto>>(_ownerRepository.GetPokemonByOwner(ownerid)));
+        }
+
+        [HttpPost]
+        public IActionResult postOwner([FromQuery] int countryId,[FromBody]OwnerDto owner)
+        {
+            if(owner==null)
+                return BadRequest(ModelState);
+            if (_ownerRepository.GetOwners().Any(o => (o.FirstName + owner.LastName).ToUpper() == (owner.FirstName + owner.LastName).ToUpper()))
+            {
+                ModelState.AddModelError("", "Error Owner Already Exists");
+                return StatusCode(407, ModelState);
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var ownerMap=_mapper.Map<Owner>(owner);
+            ownerMap.Country=_countryRepository.GetCountry(countryId);
+            if(!_ownerRepository.CreateOwner(ownerMap))
+            {
+                ModelState.AddModelError("", "Owner Creation error generated");
+                return StatusCode(443,ModelState);
+            }
+            return Ok("Owner Creation Successful");
         }
     }
 }

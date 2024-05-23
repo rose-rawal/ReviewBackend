@@ -67,7 +67,7 @@ namespace ReviewApp.Controllers
             if(category != null)
             {
                 ModelState.AddModelError("", "Error category already exists");
-                return BadRequest(ModelState);
+                return StatusCode(422,ModelState);
             }
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -75,7 +75,7 @@ namespace ReviewApp.Controllers
             if (!_category.CreateCategory(categoryMap))
             {
                 ModelState.AddModelError("", "Category Creating Failed");
-                return BadRequest(ModelState);
+                return StatusCode(500, ModelState);
             }
             return Ok("Success in creating Category");
         }

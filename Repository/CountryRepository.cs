@@ -10,6 +10,13 @@ namespace ReviewApp.Repository
         public CountryRepository(DataContext context) { 
             _context=context;
         }
+
+        public bool CreateCountry(Country country)
+        {
+            _context.Countries.Add(country);
+            return Save();
+        }
+
         public ICollection<Country> GetCountries()
         {
             return _context.Countries.ToList();
@@ -33,6 +40,12 @@ namespace ReviewApp.Repository
         public bool IsCountry(int id)
         {
             return _context.Countries.Any(c=>c.Id==id);
+        }
+
+        public bool Save()
+        {
+            var countrySave = _context.SaveChanges();
+            return countrySave > 0 ? true : false;
         }
     }
 }
