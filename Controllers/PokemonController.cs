@@ -13,10 +13,12 @@ namespace ReviewApp.Controllers
     public class PokemonController : Controller
     {
         private readonly IPokemonRepository _pokemonRepository;
+        private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
-        public PokemonController(IPokemonRepository pokemonRepository, IMapper mapper)
+        public PokemonController(IPokemonRepository pokemonRepository,IReviewRepository reviewRepository, IMapper mapper)
         {
             this._pokemonRepository = pokemonRepository;
+            _reviewRepository = reviewRepository;
             this._mapper = mapper;
         }
         [HttpGet]
@@ -100,6 +102,40 @@ namespace ReviewApp.Controllers
             }
 
             return Ok("Successfully updated pokemon");
+        }
+
+
+        [HttpDelete("{pokeId}")]
+        public IActionResult DeleteCountry(int pokeId)
+        {
+            if (pokeId < 0)
+            {
+                ModelState.AddModelError("", "pokemon Wrong");
+                return StatusCode(500, ModelState);
+            }
+            var pokemonData = _pokemonRepository.GetPokemon(pokeId);
+            
+            if (pokemonData == null)
+            {
+                ModelState.AddModelError("", "Error no pokemon Found");
+                return StatusCode(501, ModelState);
+
+            }
+            var reviewData=_reviewRepository.GetReviewsofPokemon(pokeId);
+            if(!_reviewRepository.DeleteMultipleReview(reviewData))
+            {
+                ModelState.AddModelError("", "Error in deleting reviews associated with pokemon");
+                return StatusCode(507,ModelState);  
+            }
+            if (!_pokemonRepository.DeletePokemon(pokemonData))
+            {
+                ModelState.AddModelError("", "Error deleting pokemon");
+                return StatusCode(501, ModelState);
+
+            }
+            return Ok("delete successful");
+
+
         }
     }
 }

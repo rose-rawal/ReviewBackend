@@ -25,6 +25,12 @@ namespace ReviewApp.Repository
             return Save();
         }
 
+        public bool DeleteCategory(Category category)
+        {
+            _context.Remove(category);
+            return Save();
+        }
+
         public ICollection<Category> GetCategories()
         {
             ICollection<Category> category=_context.Categories.OrderBy(c=>c.Id).ToList();

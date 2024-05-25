@@ -108,5 +108,31 @@ namespace ReviewApp.Controllers
             }
             return Ok("Successfully Updated Owner");
         }
+
+        [HttpDelete("{ownerId}")]
+        public IActionResult DeleteCountry(int ownerId)
+        {
+            if (ownerId < 0)
+            {
+                ModelState.AddModelError("", "owner Wrong");
+                return StatusCode(500, ModelState);
+            }
+            var ownerData = _ownerRepository.GetOwner(ownerId);
+            if (ownerData == null)
+            {
+                ModelState.AddModelError("", "Error no owner Found");
+                return StatusCode(501, ModelState);
+
+            }
+            if (!_ownerRepository.DeleteOwner(ownerData))
+            {
+                ModelState.AddModelError("", "Error deleting owner");
+                return StatusCode(501, ModelState);
+
+            }
+            return Ok("delete successful");
+
+
+        }
     }
 }

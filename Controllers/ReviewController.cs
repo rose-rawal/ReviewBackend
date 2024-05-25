@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ReviewApp.Dto;
 using ReviewApp.Interfaces;
 using ReviewApp.Models;
+using ReviewApp.Repository;
 
 namespace ReviewApp.Controllers
 {
@@ -87,6 +88,32 @@ namespace ReviewApp.Controllers
                 return StatusCode(409, ModelState);
             }
             return Ok("Successfully updated review");
+        }
+
+        [HttpDelete("{reviewId}")]
+        public IActionResult DeleteReview(int reviewId)
+        {
+            if (reviewId < 0)
+            {
+                ModelState.AddModelError("", "review Wrong");
+                return StatusCode(500, ModelState);
+            }
+            var reviewData = _reviewRepository.GetReview(reviewId);
+            if (reviewData == null)
+            {
+                ModelState.AddModelError("", "Error no review Found");
+                return StatusCode(501, ModelState);
+
+            }
+            if (!_reviewRepository.DeleteReview(reviewData))
+            {
+                ModelState.AddModelError("", "Error deleting review");
+                return StatusCode(501, ModelState);
+
+            }
+            return Ok("delete successful");
+
+
         }
     }
 }

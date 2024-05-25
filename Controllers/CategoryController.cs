@@ -99,5 +99,31 @@ namespace ReviewApp.Controllers
             return Ok("Successfully updated Data");
         }
 
+        [HttpDelete("{categoryId}")]
+        public IActionResult DeleteCategory(int categoryId)
+        {
+            if(categoryId<0)
+            {
+                ModelState.AddModelError("", "categoryId Wrong");
+                return StatusCode(500, ModelState);
+            }
+            var categoryData=_category.GetCategory(categoryId);
+            if (categoryData==null)
+            {
+                ModelState.AddModelError("","Error no category Found");
+                return StatusCode(501, ModelState);
+                
+            }
+            if(!_category.DeleteCategory(categoryData))
+            {
+                ModelState.AddModelError("", "Error deleting Category");
+                return StatusCode(501, ModelState);
+
+            }
+            return Ok("delete successful");
+
+
+        }
+
     }
 }

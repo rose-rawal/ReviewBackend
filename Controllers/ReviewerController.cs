@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ReviewApp.Dto;
 using ReviewApp.Interfaces;
 using ReviewApp.Models;
+using ReviewApp.Repository;
 
 namespace ReviewApp.Controllers
 {
@@ -13,10 +14,13 @@ namespace ReviewApp.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IReviewerRepository _reviewer;
-        public ReviewerController(IReviewerRepository reviewer,IMapper mapper)
+        private readonly IReviewRepository _review;
+
+        public ReviewerController(IReviewerRepository reviewer,IReviewRepository review,IMapper mapper)
         {
             _mapper = mapper;
             _reviewer  =reviewer;
+            _review = review;
         }
 
         [HttpGet]
@@ -92,6 +96,42 @@ namespace ReviewApp.Controllers
                 return StatusCode(406,ModelState);
             }
             return Ok("Success in updating reviewer");
+        }
+
+
+        [HttpDelete("{reviewerId}")]
+        public IActionResult DeleteReviewer(int reviewerId)
+        {
+            if (reviewerId < 0)
+            {
+                ModelState.AddModelError("", "reviewer Wrong");
+                return StatusCode(500, ModelState);
+            }
+            var reviewerData = _reviewer.GetReviewer(reviewerId);
+            if (reviewerData == null)
+            {
+                ModelState.AddModelError("", "Error no reviewer Found");
+                return StatusCode(501, ModelState);
+
+            }
+            var reviewToDelete=_reviewer.GetReviewsByReviewer(reviewerId);
+           
+            if(reviewToDelete.Any() && !_review.DeleteMultipleReview(reviewToDelete))
+            {
+                
+                ModelState.AddModelError("", "Error deleting review of reviewer");
+                return StatusCode(501, ModelState);
+
+            }
+            if (!_reviewer.DeleteReviewer(reviewerData))
+            {
+                ModelState.AddModelError("", "Error deleting reviewer");
+                return StatusCode(501, ModelState);
+
+            }
+            return Ok("delete successful");
+
+
         }
 
     }

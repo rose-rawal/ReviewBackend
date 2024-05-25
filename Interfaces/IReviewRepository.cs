@@ -11,6 +11,8 @@ namespace ReviewApp.Interfaces
         bool PostReview(int reviewerId,int pokeId,Review review);
         bool Save();
         bool UpdateReview(Review review);
+        bool DeleteReview(Review review);
+        bool DeleteMultipleReview(ICollection<Review> reviews);
     }
 
 }

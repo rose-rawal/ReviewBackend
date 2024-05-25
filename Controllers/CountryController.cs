@@ -105,5 +105,31 @@ namespace ReviewApp.Controllers
             }
             return Ok("Successfully updated country");
         }
+
+        [HttpDelete("{countryId}")]
+        public IActionResult DeleteCountry(int countryId)
+        {
+            if (countryId < 0)
+            {
+                ModelState.AddModelError("", "country Wrong");
+                return StatusCode(500, ModelState);
+            }
+            var countryData = _countryRepository.GetCountry(countryId);
+            if (countryData == null)
+            {
+                ModelState.AddModelError("", "Error no country Found");
+                return StatusCode(501, ModelState);
+
+            }
+            if (!_countryRepository.DeleteCountry(countryData))
+            {
+                ModelState.AddModelError("", "Error deleting country");
+                return StatusCode(501, ModelState);
+
+            }
+            return Ok("delete successful");
+
+
+        }
     }
 }
