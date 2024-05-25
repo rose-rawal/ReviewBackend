@@ -79,5 +79,25 @@ namespace ReviewApp.Controllers
             }
             return Ok("Success in creating Category");
         }
+
+
+        [HttpPut("{categoryId}")]
+        public IActionResult UpdateCategory(int categoryId,[FromBody] CategoryDto category)
+        {
+            if(category==null)
+                return BadRequest(ModelState);
+            if(categoryId!=category.Id)
+                return BadRequest(ModelState);
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var categoryMap=_mapper.Map<Category>(category);
+            if(!_category.UpdateCategory(categoryMap))
+            {
+                ModelState.AddModelError("", "Error in updating Category");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Successfully updated Data");
+        }
+
     }
 }

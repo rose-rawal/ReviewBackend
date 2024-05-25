@@ -71,5 +71,28 @@ namespace ReviewApp.Controllers
             return Ok("Success in creating reviewer");
         }
 
+
+        [HttpPut("{reviewerId}")]
+        public IActionResult UpdatedReviewer(int reviewerId, [FromBody]ReviewerDto reviewer)
+        {
+            if(reviewer==null)
+                return BadRequest(ModelState);
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+            if(!_reviewer.HasReviewer(reviewerId))
+            {
+                ModelState.AddModelError("", "Error couldnt find reviewer");
+                return StatusCode(407, ModelState);
+
+            }
+            var reviwerMap=_mapper.Map<Reviewer>(reviewer);
+            if(!_reviewer.UpdateReviewer(reviwerMap))
+            {
+                ModelState.AddModelError("", "Error couldnt update the reviewer");
+                return StatusCode(406,ModelState);
+            }
+            return Ok("Success in updating reviewer");
+        }
+
     }
 }

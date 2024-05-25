@@ -69,6 +69,24 @@ namespace ReviewApp.Controllers
             return Ok("Review Posting Successfull");
         }
 
-        
+        [HttpPut("{reviewId}")]
+        public IActionResult UpdateReview(int reviewId, [FromBody]ReviewDto review)
+        {
+            if(review==null )
+                return BadRequest(ModelState);
+            if(!(review.Id==reviewId))
+            {
+                ModelState.AddModelError("", "Review Id not matched");
+                return StatusCode(408, ModelState);
+            }
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+            var reviewMap=_mapper.Map<Review>(review);
+            if(!_reviewRepository.UpdateReview(reviewMap))
+            {
+                ModelState.AddModelError("", "error in updating review");
+                return StatusCode(409, ModelState);
+            }
+            return Ok("Successfully updated review");
+        }
     }
 }

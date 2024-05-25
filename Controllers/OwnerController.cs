@@ -90,5 +90,23 @@ namespace ReviewApp.Controllers
             }
             return Ok("Owner Creation Successful");
         }
+
+        [HttpPut("{ownerId}")]
+        public IActionResult UpdateOwner(int ownerId,[FromBody]OwnerDto owner)
+        {
+            if (owner == null)
+                return BadRequest(ModelState);
+            if (owner.Id != ownerId)
+                return BadRequest(ModelState);
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var ownerMap=_mapper.Map<Owner>(owner);
+            if(!_ownerRepository.UpdateOwner(ownerMap))
+            {
+                ModelState.AddModelError("", "Error in updating Owner");
+                StatusCode(406, ModelState);
+            }
+            return Ok("Successfully Updated Owner");
+        }
     }
 }

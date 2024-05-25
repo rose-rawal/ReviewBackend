@@ -88,5 +88,22 @@ namespace ReviewApp.Controllers
             return Ok("Success in creating Country");
 
         }
+
+
+        [HttpPut("{countryId}")]
+        public IActionResult UpdateCountry([FromBody]CountryDto country)
+        {
+            if(country==null)
+                return BadRequest(ModelState);
+            if (!ModelState.IsValid) 
+                return BadRequest(ModelState);
+            var countryMap=_mapper.Map<Country>(country);
+            if(_countryRepository.UpdateCountry(countryMap))
+            {
+                ModelState.AddModelError("", "Error in updating country");
+                StatusCode(405, ModelState);
+            }
+            return Ok("Successfully updated country");
+        }
     }
 }

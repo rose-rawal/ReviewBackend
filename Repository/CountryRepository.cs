@@ -47,5 +47,11 @@ namespace ReviewApp.Repository
             var countrySave = _context.SaveChanges();
             return countrySave > 0 ? true : false;
         }
+
+        public bool UpdateCountry(Country country)
+        {
+            _context.Countries.Update(country);
+            return Save();
+        }
     }
 }

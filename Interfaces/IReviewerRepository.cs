@@ -10,5 +10,6 @@ namespace ReviewApp.Interfaces
         bool HasReviewer(int id);
         bool PostReviewer(int reviewId,Reviewer reviewer);
         bool Save();
+        bool UpdateReviewer(Reviewer reviewer);
     }
 }
