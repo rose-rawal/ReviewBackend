@@ -136,3 +136,4 @@ E:\DotNet Train\ReviewApp\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Securi
 E:\DotNet Train\ReviewApp\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 E:\DotNet Train\ReviewApp\bin\Debug\net8.0\AutoMapper.dll
 E:\DotNet Train\ReviewApp\obj\Debug\net8.0\ReviewApp.sourcelink.json
+E:\DotNet Train\ReviewApp\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
